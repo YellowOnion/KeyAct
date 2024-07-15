@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: black;
+                color:white;
+                font-size: 24pt;
+                font-family: consolas;
+            } 
+        </style>
+    <meta charset="utf-8">
+    <script>
+        function roundedRect(ctx, x, y, width, height, radius, fill) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + radius);
+            ctx.arcTo(x, y + height, x + radius, y + height, radius);
+            ctx.arcTo(x + width, y + height, x + width, y + height - radius, radius);
+            ctx.arcTo(x + width, y, x + width - radius, y, radius);
+            ctx.arcTo(x, y, x, y + radius, radius);
+            if (fill) {
+                ctx.fill();
+            } else {
+                ctx.stroke();
+            }
+        }
+        window.onload = function () {
+            keyWidth = 32;
+            keyGap = 8;
+            const ws = new WebSocket("ws://localhost:9160");
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+             //msg = document.getElementById("msg");
+
+            keyW = false;
+            keyS = false;
+            keyA = false;
+            keyD = false;
+
+            drawKeys = function() { 
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = "white";
+                ctx.strokeStyle = "white";
+                roundedRect(ctx, keyWidth * 1 + keyGap * 2, keyGap                   , keyWidth, keyWidth, 2, keyW);
+                roundedRect(ctx, keyGap                   , keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyA);
+                roundedRect(ctx, keyWidth * 1 + keyGap * 2, keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyS);
+                roundedRect(ctx, keyWidth * 2 + keyGap * 3, keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyD);
+            }
+
+            drawKeys();
+            ws.onmessage = function(event) {
+                console.log(event.data);
+                //msg.innerHTML = event.data;
+
+                state = event.data.split("::");
+                
+                if (state[1] == "Pressed") {
+                    fill = true;
+                } else {
+                    fill = false;
+                }
+                    
+                switch (state[0]) {
+                case "KeyW":
+                    keyW = fill;
+                    break;
+
+                case "KeyA":
+                    keyA = fill;
+                    break;
+
+                case "KeyS":
+                    keyS = fill;
+                    break;
+                case "KeyD":
+                    keyD = fill;
+                    break;
+                }
+                drawKeys(); 
+            };
+        };
+    </script>
+    </head>
+<body>
+<!--     <span id="msg"> </span> <br /> -->
+    <canvas id="canvas" width="128px" height="88px"> </canvas>
+</body>
+</html>
