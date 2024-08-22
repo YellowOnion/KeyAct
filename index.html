@@ -4,7 +4,7 @@
         <style>
             body {
                 background-color: black;
-                color:white;
+                color: white;
                 font-size: 24pt;
                 font-family: consolas;
             } 
@@ -19,10 +19,14 @@
             ctx.arcTo(x + width, y, x + width - radius, y, radius);
             ctx.arcTo(x, y, x, y + radius, radius);
             if (fill) {
+                ctx.fillStyle = "white";
                 ctx.fill();
             } else {
-                ctx.stroke();
+                ctx.fillStyle = "black";
+                ctx.fill();
             }
+            ctx.strokeStyle = "white";
+            ctx.stroke();
         }
         window.onload = function () {
             keyWidth = 32;
@@ -30,22 +34,30 @@
             const ws = new WebSocket("ws://localhost:9160");
             const canvas = document.getElementById("canvas");
             const ctx = canvas.getContext("2d");
+            ctx.translate(0.5,0.5);
+            ctx.lineWidth = 2;
              //msg = document.getElementById("msg");
 
+            keyQ = false;
             keyW = false;
+            keyE = false;
             keyS = false;
             keyA = false;
             keyD = false;
+            keyF = false;
+            keySpace = false;
 
             drawKeys = function() { 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                ctx.fillStyle = "white";
-                ctx.strokeStyle = "white";
+                roundedRect(ctx, keyWidth * 0.3125 * 1 + keyGap * 1, keyWidth * 0.3125 + keyGap, keyWidth * 0.66, keyWidth * 0.66, 2, keyQ);
                 roundedRect(ctx, keyWidth * 1 + keyGap * 2, keyGap                   , keyWidth, keyWidth, 2, keyW);
+                roundedRect(ctx, keyWidth * 2 + keyGap * 3, keyWidth * 0.3125 + keyGap, keyWidth * 0.66, keyWidth * 0.66, 2, keyE);
                 roundedRect(ctx, keyGap                   , keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyA);
                 roundedRect(ctx, keyWidth * 1 + keyGap * 2, keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyS);
                 roundedRect(ctx, keyWidth * 2 + keyGap * 3, keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyD);
+                roundedRect(ctx, keyWidth * 3 + keyGap * 5, keyWidth * 1 + keyGap * 2, keyWidth, keyWidth, 2, keyF);
+                roundedRect(ctx, keyWidth * 2 + keyGap * 3, keyWidth * 2 + keyGap * 3, keyWidth * 4, keyWidth, 2, keySpace);
             }
 
             drawKeys();
@@ -62,8 +74,16 @@
                 }
                     
                 switch (state[0]) {
+                case "KeyQ":
+                    keyQ = fill;
+                    break;
+
                 case "KeyW":
                     keyW = fill;
+                    break;
+
+                case "KeyE":
+                    keyE = fill;
                     break;
 
                 case "KeyA":
@@ -73,8 +93,17 @@
                 case "KeyS":
                     keyS = fill;
                     break;
+
                 case "KeyD":
                     keyD = fill;
+                    break;
+
+                case "KeyF":
+                    keyF = fill;
+                    break;
+
+                case "KeySpace":
+                    keySpace = fill;
                     break;
                 }
                 drawKeys(); 
@@ -84,6 +113,6 @@
     </head>
 <body>
 <!--     <span id="msg"> </span> <br /> -->
-    <canvas id="canvas" width="128px" height="88px"> </canvas>
+    <canvas id="canvas" width="176px" height="128px"> </canvas>
 </body>
 </html>

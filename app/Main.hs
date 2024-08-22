@@ -17,7 +17,8 @@ import qualified Network.WebSockets as WS
 import qualified Evdev as Ev
 import qualified Evdev.Codes as EvCodes
 
-keys = [EvCodes.KeyW, EvCodes.KeyA, EvCodes.KeyS, EvCodes.KeyD]
+keys = [ EvCodes.KeyQ, EvCodes.KeyW, EvCodes.KeyE, EvCodes.KeyA, EvCodes.KeyS
+       , EvCodes.KeyD, EvCodes.KeyF, EvCodes.KeySpace ]
 
 evToText :: Ev.EventData -> Maybe String
 evToText (Ev.KeyEvent key state)
